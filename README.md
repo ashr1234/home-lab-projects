@@ -87,9 +87,10 @@ My focus is **Network Security Engineering** — combining network design (VLANs
 
 ```mermaid
 flowchart LR
-    Internet((🌐 Internet))
+    Internet((Internet))
     DDNS[DDNS Provider]
     WG[WireGuard VPN 10.8.0.0/24]
+    Proxmox[Proxmox Host]
 
     subgraph LAN [192.168.1.0/24 LAN VLAN]
         LANClients[Trusted Clients & Servers]
@@ -109,5 +110,6 @@ flowchart LR
     GuestClients -->|Internet Only| Internet
     IoTDevices -->|Restricted Outbound| Internet
     LANClients -->|Allowed Mgmt Access| IoTDevices
-    Proxmox-.WAN IP Update.->DDNS
+    Proxmox -.WAN IP Update.-> DDNS
+
 ```
