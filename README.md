@@ -1,159 +1,170 @@
-🏠 Homelab Projects – Ashil Muhammod Rafique
+# 🏠 Homelab Projects – Ashil Muhammod Rafique  
+
+Welcome 👋  
+This repository documents my self-hosted **networking and security lab**, built on **Proxmox VE** with a mix of LXCs, VMs, and Dockerized services.  
 
-Welcome 👋
-This repository documents my self-hosted networking and security lab, built on Proxmox VE with LXCs and Dockerized services.
+My focus is on **Network Security Engineering** — combining **network design** (VLANs, VPNs, firewalls) with **secure service deployment**, **automation**, and **backup strategies**.  
 
-My focus is Network Security Engineering — combining network design (VLANs, VPN, firewalling) with secure service deployment, automation, and backup strategies.
+---
 
-⚙️ Homelab Infrastructure
+## ⚙️ Core Infrastructure  
+
+### 🖥️ Virtualization Platform  
+- **Proxmox VE 8.4** on a Lenovo ThinkCentre M73.  
+- **2 NICs** (built-in + USB Ethernet) passed through to virtual machines.  
+- Infrastructure split logically:  
+  - **LXCs** → lightweight DNS, VPN services.  
+  - **VMs** → Firewall/router (OPNsense), Docker host.  
+
+### 📦 Virtual Machines & Containers  
+- **LXC 100 – Pi-hole** → DNS resolution + ad-blocking.  
+- **LXC 101 – WireGuard VPN** → secure remote access (10.8.0.0/24).  
+- **VM 200 – OPNsense Router** → virtualized firewall/router with dual NIC passthrough.  
+- **VM 102 – Docker Host** → runs container stack (media, productivity, security, monitoring).  
 
-Base Hypervisor
+### ⚡ Resource Management  
+- Startup order: **DNS → VPN → Router → Applications**.  
+- RAM locked per VM/LXC to prevent contention.  
+- CPU pinning to balance load (e.g., Jellyfin transcoding isolated).  
 
-Proxmox VE 8.4 running on Lenovo ThinkCentre M73.
+---
 
-Services split into LXCs (network/security) and VM (application stack).
+## 🔐 Network Security Projects  
 
-Virtual Machines & Containers
+### 🛡️ Virtual Router with OPNsense  
+I replaced my ISP router’s routing/firewall duties with an **OPNsense VM inside Proxmox**.  
 
-LXC 100 – Pi-hole → DNS resolution + ad blocking.
+**NIC Assignments:**  
+- **NIC 1 (built-in Ethernet)** → WAN uplink to ISP router.  
+- **NIC 2 (USB Ethernet)** → back into ISP router, used as **LAN/AP trunk**.  
+- Both NICs are passed through to the OPNsense VM.  
 
-LXC 101 – WireGuard VPN → secure remote access (10.8.0.0/24).
+🔹 **ISP Router (Vodafone PowerHub)** demoted to **Access Point mode**:  
+- Provides Wi-Fi and LAN switching only.  
+- DHCP and NAT disabled.  
+- All routing and firewalling handled by **OPNsense**.  
 
-VM 200 – OPNsense Router → dual-NIC router/firewall handling VLANs.
+### 🌐 VLAN Segmentation  
+Implemented **VLAN separation** at the firewall level in OPNsense:  
 
-VM 102 – Docker Host → runs container stack (media, productivity, security, monitoring).
+- **192.168.1.0/24 – LAN VLAN**  
+  - Trusted devices: Proxmox host, Docker stack, PCs.  
+- **192.168.5.0/24 – Guest VLAN**  
+  - Wi-Fi guests: internet-only, no lateral movement.  
+- **192.168.10.0/24 – IoT VLAN**  
+  - Smart TVs, plugs, sensors.  
+  - Internet access restricted to firmware updates/cloud APIs.  
+  - Manageable only from LAN VLAN.  
 
-Resource Management
+**Firewall Policy Highlights:**  
+- Guest → Internet ✅ | Guest → LAN/IoT ❌  
+- IoT → Internet (restricted) ✅ | IoT → LAN ❌ (except HA controls)  
+- LAN → all VLANs ✅ (management, updates)  
 
-Startup sequencing: DNS → VPN → Router → Apps.
+### 🔑 WireGuard VPN + DDNS  
+- **WireGuard LXC** provides secure remote access to LAN/IoT.  
+- Clients join subnet **10.8.0.0/24**.  
+- **Split tunneling** → only LAN + IoT routes over VPN.  
+- **DDNS integration** → Proxmox updates WAN IP to DDNS provider after router reboots.  
+- Strong cryptography: **ChaCha20** + **Curve25519** keys.  
 
-Memory locked per VM/LXC.
+---
 
-CPU pinning to prevent starvation.
+## 🗄️ Application Stack (Docker Host – VM 102)  
 
-🔐 Network Security Projects
-OPNsense Router & VLAN Segmentation
+### 🎬 Media & Library Management  
+- **Jellyfin** → self-hosted media server.  
+- **Radarr / Sonarr / Lidarr / Prowlarr** → library indexing + automated media organization.  
+- **qBittorrentVPN** → containerized client routed through VPN for privacy.  
 
-I virtualized my router by running OPNsense in Proxmox, with two NICs:
+### 📂 Productivity & Storage  
+- **Nextcloud** (+ MariaDB + Redis) → cloud storage, calendar, file sync.  
+- **FreshRSS** → RSS aggregation (tech, security, news).  
 
-NIC1 (built-in) → connected to ISP router, used as WAN uplink.
+### 💰 Finance & Budgeting  
+- **Firefly III** → self-hosted finance manager.  
+- **Firefly Importer** → automatic bank statement imports.  
 
-NIC2 (USB Ethernet) → connected to ISP router, but used for LAN/AP access.
+### 🔐 Security & Management  
+- **Vaultwarden** → Bitwarden-compatible password manager.  
+- **Caddy** → reverse proxy, TLS termination (`*.docker.lan`).  
+- **Portainer** → web UI for Docker management.  
+- **Filebrowser** → web file explorer.  
+- **Homepage** → unified dashboard.  
 
-Both NICs are passed through to the OPNsense VM.
+### ⚙️ Automation & Monitoring  
+- **Home Assistant** → smart plug/humidity automation, notifications.  
+- **Glances** → system & Docker monitoring API (used in Homepage).  
 
-The ISP router (Vodafone PowerHub) is now only an access point:
+📂 Each container setup is documented in [`/docker`](./docker).  
 
-Provides Wi-Fi and LAN switching.
+---
 
-DHCP and NAT disabled.
+## 💾 Backup & Disaster Recovery  
 
-All traffic passes through OPNsense.
+- **Proxmox vzdump** → VM/LXC snapshots.  
+- **Restic** → encrypted, deduplicated backups of:  
+  - `/etc/pihole/` (DNS configs)  
+  - `/etc/wireguard/` (VPN configs)  
+  - `/docker/configs/` (container configs)  
+  - `/mnt/hdd` (media, Nextcloud, Firefly data)  
+- **Rsync** → external HDD for large data sync.  
 
-VLANs in OPNsense:
+✅ Integrity Checks:  
+- `restic check` runs weekly.  
+- Monthly test restores validate backups.  
 
-192.168.1.0/24 – LAN (Proxmox, Docker host, trusted clients).
+📂 Backup details in [`/backups/restic.md`](./backups/restic.md).  
 
-192.168.5.0/24 – Guest (Wi-Fi guests, internet-only).
+---
 
-192.168.10.0/24 – IoT (smart devices, outbound restricted).
+## 🚀 Future Improvements  
 
-Firewall Rules:
+### 🔒 Networking & Security  
+- IDS/IPS (Suricata/Zeek) inside OPNsense.  
+- pfBlockerNG for threat intelligence feeds.  
+- Stricter IoT VLAN egress controls.  
+- Deploy internal PKI for TLS certificates.  
 
-Guest → Internet ✅ | Guest → LAN/IoT ❌
+### ⚙️ Infrastructure  
+- Ansible/Terraform for automated provisioning.  
+- Add second Proxmox node → HA cluster.  
+- TrueNAS Scale with ZFS for storage resiliency.  
+- Offsite cloud backups via restic + rclone.  
 
-IoT → Internet (restricted ports) ✅ | IoT → LAN ❌ (except HA controls)
+### 📊 Observability  
+- Prometheus + Grafana dashboards.  
+- Uptime Kuma for availability checks.  
+- Centralized logging with ELK or Loki.  
 
-LAN → all VLANs ✅ (for management).
+---
 
-WireGuard VPN + DDNS
+## 🖼️ Homelab Architecture  
 
-WireGuard LXC provides secure remote access.
+### 🔹 High-Level VLAN Topology  
 
-Clients join 10.8.0.0/24 and can access LAN + IoT VLANs.
+paste it here
 
-DDNS integration: Proxmox updates WAN IP to provider on ISP change.
+### 🔹 Proxmox & Service Topology  
 
-Encryption: ChaCha20 + Curve25519.
+paste it here
 
-🛡️ Security Services
+## 🎯 Career Focus  
 
-Vaultwarden → self-hosted password manager, behind Caddy TLS.
+- **Network Engineering** → VLANs, VPNs, routing, DDNS.  
+- **Network Security** → segmentation, TLS everywhere, password mgmt.  
+- **Infrastructure Engineering** → Proxmox, Docker orchestration, backups.  
 
-Caddy Reverse Proxy → central TLS gateway for all container services (*.docker.lan).
+---
 
-TLS Everywhere → internal CA with auto cert renewal.
+## 📫 Connect with Me  
 
-Port restrictions → containers only exposed internally, proxied via Caddy.
+- 🔗 LinkedIn: [Your LinkedIn Here]  
+- 📧 Email: [Your Email Here]  
 
-🗄️ Containerized Applications (VM 102 – Docker Host)
+---
 
-Media & Indexing → Jellyfin, Radarr, Sonarr, Lidarr, Prowlarr, qBittorrentVPN.
-
-Productivity → Nextcloud (MariaDB + Redis), FreshRSS.
-
-Finance → Firefly III + Importer.
-
-Security & Management → Vaultwarden, Portainer, Filebrowser, Homepage.
-
-Automation → Home Assistant (humidity-controlled smart plugs, sensors).
-
-Monitoring → Glances.
-
-📂 Full per-container setup docs are available in /docker
-.
-
-💾 Backup & Disaster Recovery
-
-Proxmox vzdump → scheduled VM/LXC snapshots.
-
-Restic → encrypted, deduplicated backups of:
-
-/etc/pihole/ (DNS configs).
-
-/etc/wireguard/ (VPN configs).
-
-/docker/configs/ (container configs).
-
-/mnt/hdd (media, Nextcloud, Firefly data).
-
-Rsync → to external HDD for bulk data.
-
-Verification:
-
-restic check weekly.
-
-Monthly test restores.
-
-📂 Details in /backups/restic.md
-.
-
-🚀 Future Improvements
-
-Networking & Security
-
-Add IDS/IPS (Suricata/Zeek) in OPNsense.
-
-Deploy pfBlockerNG for threat intelligence feeds.
-
-Expand IoT VLAN with strict egress rules.
-
-Internal PKI for cert management.
-
-Infrastructure
-
-Automate provisioning with Ansible/Terraform.
-
-Add Proxmox HA node.
-
-TrueNAS Scale with ZFS for storage.
-
-Offsite backups with restic + rclone (Backblaze/Wasabi).
-
-Observability
-
-Prometheus + Grafana dashboards.
-
-Uptime Kuma for service monitoring.
-
-Centralized logs (ELK or Loki stack).
+✨ This README is designed to:  
+- Be **clear and professional** for recruiters.  
+- Show **deep technical skills** in networking + infra.  
+- Present like a **real-world enterprise network design doc**.  
