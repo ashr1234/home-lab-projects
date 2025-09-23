@@ -120,7 +120,7 @@ flowchart TD
         end
 
         subgraph LXC101 [LXC 101 – WireGuard VPN]
-            WG[WireGuard VPN (10.8.0.0/24)]
+            WG[WireGuard VPN 10.8.0.0/24]
         end
 
         subgraph VM102 [VM 102 – Docker Host]
