@@ -110,6 +110,7 @@ flowchart LR
     GuestClients -->|Internet Only| Internet
     IoTDevices -->|Restricted Outbound| Internet
     LANClients -->|Allowed Mgmt Access| IoTDevices
-    Proxmox -.WAN IP Update.-> DDNS
+    Proxmox -. "WAN IP Update" .-> DDNS
+
 
 ```
