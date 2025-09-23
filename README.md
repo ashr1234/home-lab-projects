@@ -81,13 +81,3 @@ My focus is **Network Security Engineering** — combining network design (VLANs
   - `/mnt/hdd` (media, Nextcloud, Firefly III data).  
 - **Rsync** → external HDD for bulk data.  
 
-## 🖼️ Homelab Architecture Diagram
-
-### 🔹 1. High-Level VLAN Design
-
-```mermaid
-flowchart TD
-    X[Works?] --> Y[Yes]
-    X --> Z[No]
-
-```
