@@ -84,6 +84,7 @@ My focus is **Network Security Engineering** — combining network design (VLANs
 ## 🖼️ Homelab Architecture Diagram
 
 ### 🔹 1. High-Level VLAN Design
+
 ```mermaid
 flowchart LR
     Internet((🌐 Internet))
@@ -109,37 +110,4 @@ flowchart LR
     IoTDevices -->|Restricted Outbound| Internet
     LANClients -->|Allowed Mgmt Access| IoTDevices
     Proxmox-.WAN IP Update.->DDNS
-```
-```mermaid
-flowchart LR
-    subgraph Proxmox [Proxmox VE 8.4 Host]
-        subgraph LXC100 [LXC 100 – Pi-hole DNS]
-            PiHole[Pi-hole]
-        end
 
-        subgraph LXC101 [LXC 101 – WireGuard VPN]
-            WG[WireGuard VPN 10.8.0.0/24]
-        end
-
-        subgraph VM102 [VM 102 – Docker Host]
-            Caddy[Caddy Reverse Proxy *.docker.lan]
-            Vault[Vaultwarden]
-            Media[Jellyfin, Radarr, Sonarr, Lidarr, Prowlarr]
-            QB[qBittorrentVPN]
-            Cloud[Nextcloud + DB + Redis]
-            RSS[Freshrss]
-            Finance[Firefly III + Importer]
-            Mgmt[Portainer, Homepage, Glances, Filebrowser]
-            HA[Home Assistant]
-        end
-    end
-
-    Internet((🌐 Internet)) -->|TLS/HTTPS| Caddy
-    Internet -->|UDP 51820| WG
-    WG --> VM102
-    Caddy --> Vault
-    Caddy --> Media
-    Caddy --> Cloud
-    Caddy --> Finance
-    Mgmt --> Caddy
-```
