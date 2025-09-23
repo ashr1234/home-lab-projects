@@ -81,38 +81,9 @@ My focus is **Network Security Engineering** — combining network design (VLANs
   - `/mnt/hdd` (media, Nextcloud, Firefly III data).  
 - **Rsync** → external HDD for bulk data.  
 
-### Verification
-- `restic check` run weekly.  
-- Test restores monthly.  
-
-📂 Details in [`/backups/restic.md`](./backups/restic.md).  
-
----
-
-## 🚀 Future Improvements Roadmap
-
-### Networking & Security
-- Deploy **OPNsense/pfSense VM** → advanced firewall, IDS/IPS.  
-- Integrate **Suricata/Zeek IDS** for packet inspection.  
-- Expand IoT VLAN with **strict egress filtering**.  
-- Replace self-signed TLS with **internal PKI**.  
-
-### Infrastructure & Automation
-- Automate VM + container provisioning with **Ansible/Terraform**.  
-- Add second Proxmox node for **HA cluster**.  
-- Migrate long-term storage to **TrueNAS Scale (ZFS)**.  
-- Cloud replication via **restic + rclone** (Wasabi/Backblaze B2).  
-
-### Observability
-- Deploy **Prometheus + Grafana** → advanced metrics & alerting.  
-- Setup **uptime-kuma** for service monitoring.  
-- Centralize logs with **ELK or Loki stack**.  
-
----
-
 ## 🖼️ Homelab Architecture Diagram
 
-```mermaid
+### 🔹 1. High-Level VLAN Design
 ```mermaid
 flowchart LR
     Internet((🌐 Internet))
@@ -138,11 +109,7 @@ flowchart LR
     IoTDevices -->|Restricted Outbound| Internet
     LANClients -->|Allowed Mgmt Access| IoTDevices
     Proxmox-.WAN IP Update.->DDNS
----
-
-### 🔹 2. Detailed Service Diagram (inside Proxmox)
-
-```markdown
+```
 ```mermaid
 flowchart LR
     subgraph Proxmox [Proxmox VE 8.4 Host]
@@ -175,4 +142,4 @@ flowchart LR
     Caddy --> Cloud
     Caddy --> Finance
     Mgmt --> Caddy
-
+```
