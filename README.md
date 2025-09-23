@@ -159,12 +159,8 @@ paste it here
 
 ## 📫 Connect with Me  
 
-- 🔗 LinkedIn: [Your LinkedIn Here]  
-- 📧 Email: [Your Email Here]  
+- 🔗 LinkedIn:
+- 📧 Email:
 
 ---
 
-✨ This README is designed to:  
-- Be **clear and professional** for recruiters.  
-- Show **deep technical skills** in networking + infra.  
-- Present like a **real-world enterprise network design doc**.  
