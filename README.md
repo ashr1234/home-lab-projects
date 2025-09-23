@@ -87,30 +87,6 @@ My focus is **Network Security Engineering** — combining network design (VLANs
 
 ```mermaid
 flowchart LR
-    Internet((Internet))
-    DDNS[DDNS Provider]
-    WG[WireGuard VPN 10.8.0.0/24]
-    Proxmox[Proxmox Host]
-
-    subgraph LAN [192.168.1.0/24 LAN VLAN]
-        LANClients[Trusted Clients & Servers]
-    end
-
-    subgraph Guest [192.168.5.0/24 Guest VLAN]
-        GuestClients[Guest WiFi Devices]
-    end
-
-    subgraph IoT [192.168.10.0/24 IoT VLAN]
-        IoTDevices[Smart TVs, Plugs, Sensors]
-    end
-
-    Internet -->|UDP 51820| WG
-    WG --> LANClients
-    WG --> IoTDevices
-    GuestClients -->|Internet Only| Internet
-    IoTDevices -->|Restricted Outbound| Internet
-    LANClients -->|Allowed Mgmt Access| IoTDevices
-    Proxmox -. "WAN IP Update" .-> DDNS
-
+    A[LAN VLAN 192.168.1.0/24] --> B[Internet]
 
 ```
