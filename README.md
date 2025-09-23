@@ -43,7 +43,7 @@ My focus is **Network Security Engineering** — combining network design (VLANs
 - **WireGuard server** in Proxmox LXC.  
 - **Client subnet**: 10.8.0.0/24.  
 - **Split tunneling** → clients route only 192.168.1.0/24 and 192.168.10.0/24 over VPN.  
-- **DDNS integration**: dynamic ISP IPs updated via `myhomelab.ddns.net`.  
+- **DDNS integration**: dynamic ISP IPs updated via `ashil.uk`.  
 - **Security**: ChaCha20 encryption, Curve25519 keys, NAT rules with least privilege.  
 
 ---
