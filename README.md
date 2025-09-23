@@ -113,7 +113,38 @@ My focus is **Network Security Engineering** — combining network design (VLANs
 ## 🖼️ Homelab Architecture Diagram
 
 ```mermaid
-flowchart TD
+```mermaid
+flowchart LR
+    Internet((🌐 Internet))
+    DDNS[DDNS Provider]
+    WG[WireGuard VPN 10.8.0.0/24]
+
+    subgraph LAN [192.168.1.0/24 LAN VLAN]
+        LANClients[Trusted Clients & Servers]
+    end
+
+    subgraph Guest [192.168.5.0/24 Guest VLAN]
+        GuestClients[Guest WiFi Devices]
+    end
+
+    subgraph IoT [192.168.10.0/24 IoT VLAN]
+        IoTDevices[Smart TVs, Plugs, Sensors]
+    end
+
+    Internet -->|UDP 51820| WG
+    WG --> LANClients
+    WG --> IoTDevices
+    GuestClients -->|Internet Only| Internet
+    IoTDevices -->|Restricted Outbound| Internet
+    LANClients -->|Allowed Mgmt Access| IoTDevices
+    Proxmox-.WAN IP Update.->DDNS
+---
+
+### 🔹 2. Detailed Service Diagram (inside Proxmox)
+
+```markdown
+```mermaid
+flowchart LR
     subgraph Proxmox [Proxmox VE 8.4 Host]
         subgraph LXC100 [LXC 100 – Pi-hole DNS]
             PiHole[Pi-hole]
@@ -126,32 +157,22 @@ flowchart TD
         subgraph VM102 [VM 102 – Docker Host]
             Caddy[Caddy Reverse Proxy *.docker.lan]
             Vault[Vaultwarden]
-            Media[Jellyfin / Radarr / Sonarr / Lidarr / Prowlarr]
+            Media[Jellyfin, Radarr, Sonarr, Lidarr, Prowlarr]
             QB[qBittorrentVPN]
             Cloud[Nextcloud + DB + Redis]
             RSS[Freshrss]
             Finance[Firefly III + Importer]
-            Mgmt[Portainer + Homepage + Glances + Filebrowser]
+            Mgmt[Portainer, Homepage, Glances, Filebrowser]
             HA[Home Assistant]
         end
     end
 
-    Internet((Internet))
-    DDNS[DDNS Provider]
-    Guest[192.168.5.0/24 Guest VLAN]
-    LAN[192.168.1.0/24 LAN VLAN]
-    IoT[192.168.10.0/24 IoT VLAN]
-
+    Internet((🌐 Internet)) -->|TLS/HTTPS| Caddy
     Internet -->|UDP 51820| WG
-    WG --> LAN
-    WG --> IoT
-    LAN --> PiHole
-    LAN --> Caddy
-    Guest -->|Internet only| Internet
-    IoT -->|Restricted outbound| Internet
-    Proxmox -.WAN IP Update.-> DDNS
+    WG --> VM102
     Caddy --> Vault
     Caddy --> Media
     Caddy --> Cloud
     Caddy --> Finance
     Mgmt --> Caddy
+
