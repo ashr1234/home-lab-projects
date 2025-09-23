@@ -86,7 +86,8 @@ My focus is **Network Security Engineering** — combining network design (VLANs
 ### 🔹 1. High-Level VLAN Design
 
 ```mermaid
-flowchart LR
-    A[LAN VLAN 192.168.1.0/24] --> B[Internet]
+flowchart TD
+    X[Works?] --> Y[Yes]
+    X --> Z[No]
 
 ```
