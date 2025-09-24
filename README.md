@@ -143,11 +143,10 @@ Implemented **VLAN separation** at the firewall level in OPNsense:
 
 ### 🔹 High-Level VLAN Topology  
 
-
-
+![VLAN Topology](docs/vlan_topology.png)
 ### 🔹 Proxmox & Service Topology  
 
-
+![Service Topology](docs/proxmox_services_topology.png)
 
 ## 🎯 Career Focus  
 
@@ -159,8 +158,8 @@ Implemented **VLAN separation** at the firewall level in OPNsense:
 
 ## 📫 Connect with Me  
 
-- 🔗 LinkedIn:
-- 📧 Email:
+- 🔗 LinkedIn: www.linkedin.com/in/ashil-muhammod-rafique-56837a58
+- 📧 Email: ashilrafique97@gmail.com
 
 ---
 
