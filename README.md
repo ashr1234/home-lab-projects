@@ -148,6 +148,35 @@ Implemented **VLAN separation** at the firewall level in OPNsense:
 
 ![Service Topology](docs/proxmox_services_topology.png)
 
+
+## 📸 Screenshots
+
+A few selected screenshots from my homelab services.
+
+### 🔹 Homepage Dashboard
+Centralized dashboard showing all homelab services and their health.
+![Homepage](docs/screenshots/homepage.png)
+
+### 🔹 Glances – System Monitoring
+Real-time monitoring of CPU, RAM, disk, and Docker containers.
+![Glances](docs/screenshots/glance.png)
+
+### 🔹 Portainer – Container Management
+Manage and monitor Docker stacks visually.
+![Portainer](docs/screenshots/portainer.png)
+
+(Alternative Portainer view)
+![Portainer 2](docs/screenshots/portainer-2.png)
+
+### 🔹 Nextcloud – Personal Cloud
+Web-based file sync and storage with apps.
+![Nextcloud](docs/screenshots/nextcloud.png)
+
+### 🔹 Pi-hole – DNS & Ad Blocking
+Network-wide ad blocking and DNS filtering.
+![Pi-hole](docs/screenshots/pihole.png)
+
+
 ## 🎯 Career Focus  
 
 - **Network Engineering** → VLANs, VPNs, routing, DDNS.  
