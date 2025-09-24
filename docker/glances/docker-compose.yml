@@ -1,0 +1,14 @@
+version: "3.8"
+
+services:
+  glances:
+    image: nicolargo/glances:latest-full
+    container_name: glances
+    pid: "host"                         # monitor host processes
+    network_mode: "host"                # expose directly on host IP
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /etc/os-release:/etc/os-release:ro
+    environment:
+      - GLANCES_OPT=-w                  # run in webserver mode
+    restart: unless-stopped
