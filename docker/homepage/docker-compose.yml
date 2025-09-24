@@ -1,0 +1,18 @@
+version: "3.8"
+
+services:
+  homepage:
+    image: ghcr.io/gethomepage/homepage:latest
+    container_name: homepage
+    user: root
+    ports:
+      - 3000:3000
+    volumes:
+      - ./config:/app/config
+      - /mnt/storage:/mnt/storage:ro    
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    environment:
+      HOMEPAGE_ALLOWED_HOSTS: "localhost,127.0.0.1,LAN_IP:3000,your.domain.local"
+    dns:
+      - <pi hole dns IP>
+    restart: unless-stopped
