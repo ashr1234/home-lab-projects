@@ -143,11 +143,11 @@ Implemented **VLAN separation** at the firewall level in OPNsense:
 
 ### 🔹 High-Level VLAN Topology  
 
-paste it here
+
 
 ### 🔹 Proxmox & Service Topology  
 
-paste it here
+
 
 ## 🎯 Career Focus  
 
