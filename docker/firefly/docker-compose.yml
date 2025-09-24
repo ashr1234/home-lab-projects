@@ -1,0 +1,37 @@
+version: "3.9"
+
+services:
+  fireflyiii:
+    image: fireflyiii/core:latest
+    container_name: fireflyiii
+    restart: unless-stopped
+    env_file: .env                    
+    ports:
+      - 8080:8080
+    volumes:
+      - firefly_upload:/var/www/html/storage/upload
+
+  db:
+    image: mariadb:10.6
+    container_name: firefly_db
+    restart: unless-stopped
+    environment:
+      MYSQL_RANDOM_ROOT_PASSWORD: "yes"
+      MYSQL_DATABASE: firefly
+      MYSQL_USER: firefly
+      MYSQL_PASSWORD: ${FIREFLY_DB_PASSWORD}   
+    volumes:
+      - firefly_db:/var/lib/mysql
+
+  importer:
+    image: fireflyiii/data-importer:latest
+    container_name: firefly_importer
+    restart: unless-stopped
+    ports:
+      - "8081:8080"
+    env_file:
+      - .importer.env                  
+
+volumes:
+  firefly_upload:
+  firefly_db:
