@@ -1,0 +1,18 @@
+version: "3.8"
+
+services:
+  freshrss:
+    image: freshrss/freshrss:latest
+    container_name: freshrss
+    ports:
+      - "8085:80"
+    volumes:
+      - freshrss_data:/var/www/FreshRSS/data
+      - freshrss_extensions:/var/www/FreshRSS/extensions
+    environment:
+      TZ: Europe/London
+    restart: unless-stopped
+
+volumes:
+  freshrss_data:
+  freshrss_extensions:
