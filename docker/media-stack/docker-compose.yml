@@ -1,0 +1,113 @@
+version: "3.8"
+
+services:
+  jellyfin:
+    image: jellyfin/jellyfin:latest
+    container_name: jellyfin
+    network_mode: "host"                # required for DLNA/auto-discovery
+    volumes:
+      - ./jellyfin-config:/config
+      - ./jellyfin-cache:/cache
+      - /mnt/storage/Movies:/movies
+      - /mnt/storage/TV:/tv
+    restart: unless-stopped
+
+  navidrome:
+    image: deluan/navidrome:latest
+    container_name: navidrome
+    ports:
+      - "4533:4533"
+    environment:
+      ND_MUSICFOLDER: /music
+      ND_DATAFOLDER: /data
+      ND_SCAN_SYMLINKS: true
+      ND_ENABLEEXTERNALSERVICES: "false"
+    volumes:
+      - /mnt/storage/Music:/music
+      - ./navidrome-data:/data
+    restart: unless-stopped
+
+  qbittorrentvpn:
+    image: binhex/arch-qbittorrentvpn
+    container_name: qbittorrentvpn
+    cap_add:
+      - NET_ADMIN
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/London
+      - VPN_ENABLED=yes
+      - VPN_USER=${VPN_USER}           
+      - VPN_PASS=${VPN_PASS}           
+      - VPN_CONFIG=uk_london.ovpn
+      - VPN_PROV=pia
+      - STRICT_PORT_FORWARD=yes
+      - ENABLE_PRIVOXY=no
+      - VPN_CLIENT=openvpn
+      - LAN_NETWORK=192.168.1.0/24
+    volumes:
+      - ./qbittorrent/config:/config
+      - /downloads:/downloads
+    ports:
+      - 8090:8080
+      - 6881:6881
+      - 6881:6881/udp
+    restart: unless-stopped
+
+  prowlarr:
+    image: lscr.io/linuxserver/prowlarr:latest
+    container_name: prowlarr
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/London
+    volumes:
+      - ./prowlarr/config:/config
+    ports:
+      - 9696:9696
+    restart: unless-stopped
+
+  lidarr:
+    image: lscr.io/linuxserver/lidarr:latest
+    container_name: lidarr
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/London
+    volumes:
+      - ./lidarr/config:/config
+      - /downloads:/downloads
+      - /mnt/storage/Music:/music
+    ports:
+      - 8686:8686
+    restart: unless-stopped
+
+  radarr:
+    image: lscr.io/linuxserver/radarr:latest
+    container_name: radarr
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/London
+    volumes:
+      - ./radarr-config:/config
+      - /downloads:/downloads
+      - /mnt/storage/Movies:/movies
+    ports:
+      - 7878:7878
+    restart: unless-stopped
+
+  sonarr:
+    image: lscr.io/linuxserver/sonarr:latest
+    container_name: sonarr
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/London
+    volumes:
+      - ./sonarr-config:/config
+      - /downloads:/downloads
+      - /mnt/storage/TV:/tv
+    ports:
+      - 8989:8989
+    restart: unless-stopped
