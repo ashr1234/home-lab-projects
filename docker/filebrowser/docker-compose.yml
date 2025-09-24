@@ -1,0 +1,13 @@
+version: "3.8"
+
+services:
+  filebrowser:
+    image: filebrowser/filebrowser:latest
+    container_name: filebrowser
+    user: "1000:1000"
+    volumes:
+      - /mnt/storage:/srv              #mounted storage
+      - ./filebrowser_db:/database
+    ports:
+      - 8484:80                        # published to host IP
+    restart: unless-stopped
